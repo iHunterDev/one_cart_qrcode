@@ -1,12 +1,17 @@
 {
-  "name": "one_cart_qrcode_app",
+  "name": "one_cart_qrcode",
   "version": "0.1.0",
+  "author": {
+    "name": "wzblog",
+    "url": "https://github.com/wzblog",
+    "email": "wcgcodes@gmail.com"
+  },
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "electron:build": "vue-cli-service electron:build",
+    "electron:build": "vue-cli-service electron:build --win --mac",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
@@ -14,6 +19,8 @@
   "main": "background.js",
   "dependencies": {
     "core-js": "^3.6.5",
+    "qrcode": "^1.5.1",
+    "tdesign-vue-next": "^1.0.2",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
