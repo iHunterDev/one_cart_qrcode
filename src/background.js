@@ -19,11 +19,10 @@ protocol.registerSchemesAsPrivileged([
 ])
 
 async function createWindow() {
-  // Menu.setApplicationMenu(Menu.buildFromTemplate(config.menu))
   // Create the browser window.
   const win = new BrowserWindow({
     width: 800,
-    height: 500,
+    height: 600,
     webPreferences: {
       
       // Use pluginOptions.nodeIntegration, leave this alone
@@ -40,6 +39,9 @@ async function createWindow() {
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
     if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
+    // Create Menu
+    Menu.setApplicationMenu(Menu.buildFromTemplate(config.menu))
+
     createProtocol('app')
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
