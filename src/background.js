@@ -5,6 +5,7 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const path = require('path')
+const config = require('./electron/config')
 
 const server = require('./electron/server')
 // 加载服务端处理函数（不直接开放权限给渲染进程）
@@ -18,20 +19,7 @@ protocol.registerSchemesAsPrivileged([
 ])
 
 async function createWindow() {
-  Menu.setApplicationMenu(Menu.buildFromTemplate([
-    {
-      label: '淘宝一键加购二维码生成助手（单sku版本）',
-      submenu: [
-        {
-          label: '退出',
-          accelerator: 'CmdOrCtrl+Q',
-          click() {
-              app.quit();
-          }
-        }
-      ]
-    }
-  ]))
+  // Menu.setApplicationMenu(Menu.buildFromTemplate(config.menu))
   // Create the browser window.
   const win = new BrowserWindow({
     width: 800,

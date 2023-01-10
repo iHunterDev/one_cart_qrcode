@@ -9,20 +9,24 @@
       <t-col span="6" class="action-area">
         <t-form ref="form" :rules="FORM_RULES" :data="formData" :colon="true" @reset="onReset" @submit="onSubmit">
 
+          <t-form-item label="模式" name="mode">
+            <t-radio-group v-model="formData.mode" :options="MODE_OPTIONS" />
+          </t-form-item>
+
           <t-form-item label="一拖几" name="goods_num" help="指一个二维码包含几个商品">
-            <t-input v-model.number="formData.goods_num" placeholder="请输入一个二维码几个商品"></t-input>
+            <t-input v-model.number="formData.goods_num" :disabled="readonlyFieldByMode" placeholder="请输入一个二维码几个商品"></t-input>
           </t-form-item>
 
           <t-form-item label="下单件数" name="piece" help="指一件商品购买几件">
-            <t-input v-model.number="formData.piece" placeholder="请输入一个商品买几件"></t-input>
+            <t-input v-model.number="formData.piece" :disabled="readonlyFieldByMode" placeholder="请输入一个商品买几件"></t-input>
           </t-form-item>
 
           <t-form-item label="拖几轮" name="round" help="要刷给商品刷几次就写几，会随机打算商品顺序重复生成二维码。">
-            <t-input v-model.number="formData.round" placeholder="请输入一个二维码几个商品"></t-input>
+            <t-input v-model.number="formData.round" :disabled="readonlyFieldByMode" placeholder="请输入一个二维码几个商品"></t-input>
           </t-form-item>
 
           <t-form-item label="会员商品ID" name="vip_id" help="给有会员模式的店铺刷会员商品用的，注意这里写的会员ID不能在左侧的商品中出现">
-            <t-input v-model.number="formData.vip_id" placeholder="请输入会员商品ID"></t-input>
+            <t-input v-model.number="formData.vip_id" :disabled="readonlyFieldByMode" placeholder="请输入会员商品ID"></t-input>
           </t-form-item>
 
           <t-form-item>
@@ -74,6 +78,9 @@ const verifyVipId = (val) => {
 }
 // 表单验证
 const FORM_RULES = {
+  mode: [
+    { required: true, message: '模式必须选择', type: 'error' },
+  ],
   goods_num: [
     { required: true, message: '一拖几必须填写', type: 'error' },
     { pattern: /^\d+$/, message: '一拖几必须填写整数' },
@@ -94,10 +101,43 @@ const FORM_RULES = {
 
 // 表单的
 const formData = reactive({
+  mode: 'sd',
   goods_num: 6, // 一个二维码几个商品
-  piece: 2, // 一个商品买几件
+  piece: 1, // 一个商品买几件
   round: 1, // 拖几轮
   vip_id: '', // 会员商品id，用来给二维码附加会员商品，刷会员模式
+})
+
+// 模式选项
+const MODE_OPTIONS = [
+  { label: '刷单', value: 'sd' },
+  { label: '动销', value: 'dx' },
+  { label: '采货', value: 'ch' },
+]
+
+const readonlyFieldByMode = ref(false) 
+watch(() => formData.mode, (value) => {
+  // 修改输入框状态
+  if (value === 'ch') {
+    console.log()
+    formData.goods_num = data.length
+    formData.piece = 1
+    readonlyFieldByMode.value = true
+  } else if (value === 'dx') {
+    formData.goods_num = 15
+    formData.piece = 2
+    readonlyFieldByMode.value = false
+  } else {
+    formData.goods_num = 6
+    formData.piece = 1
+    readonlyFieldByMode.value = false
+  }
+})
+watch(data, (value) => {
+  if (formData.mode === 'ch') {
+    formData.goods_num = value.length
+    formData.piece = 1
+  }
 })
 
 // 同步下单件数到表格
